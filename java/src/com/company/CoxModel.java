@@ -52,8 +52,9 @@ public class CoxModel {
     public List<Double> cumulativeHazardProbability(HashMap<String, Double> pointVector, double[] times){
         List<Double> cumulativeHazards = new ArrayList<>();
         double partialHazardConstant = evaluatePartialCoxModel(pointVector);
+        LinearInterpolationFromSamplePoints linearInterpolationFromSamplePoints = new LinearInterpolationFromSamplePoints(this.cumulativeBaselineModel);
         for (double time : times) {
-            double baselineHazardAtSpecificTime = LinearInterpolationFromSamplePoints.linearInterpolationUsingPoints(this.cumulativeBaselineModel, time);
+            double baselineHazardAtSpecificTime = linearInterpolationFromSamplePoints.linearInterpolation(time);
             System.out.printf("Baseline Hazard at time %f is %f \n", time, baselineHazardAtSpecificTime);
             cumulativeHazards.add(partialHazardConstant * baselineHazardAtSpecificTime);
         }

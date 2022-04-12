@@ -5,10 +5,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class SimpleLinearInterpolation {
-    private double secondXValue;
-    private double secondYValue;
-    private double firstXValue;
-    private double firstYValue;
+    private final double secondXValue;
+    private final double secondYValue;
+    private final double firstXValue;
+    private final double firstYValue;
     private final static Logger logger = Logger.getLogger(CoxModel.class.getName());
 
     /**
@@ -24,6 +24,13 @@ public class SimpleLinearInterpolation {
             this.firstYValue = firstPoint[1];
             this.secondXValue = secondPoint[0];
             this.secondYValue = secondPoint[1];
+        }
+        else{
+            logger.log(Level.SEVERE, "The arrays are not pairs of points. Do not know what they represent.");
+            this.firstXValue=Double.NaN;
+            this.firstYValue=Double.NaN;
+            this.secondXValue=Double.NaN;
+            this.secondYValue=Double.NaN;
         }
     }
 
