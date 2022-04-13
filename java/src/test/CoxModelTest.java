@@ -14,7 +14,8 @@ class CoxModelTest {
     private final double[] timeValues;
     private final HashMap<String, Double> testCase;
     private final HashMap<String, Double> testCase2;
-    private final String jsonFileNameForTest= "cph_model_exports.json";
+    private final String jsonFileNameForTest = "cph_model_exports.json";
+    private final String sha256FileNameForTests = "sha256.hash";
 
     private CoxModelTest() {
         this.testCase = new HashMap<>();
@@ -46,7 +47,7 @@ class CoxModelTest {
     }
     @Test
     void evaluatePartialCoxModel() {
-    CoxModel coxModel = new CoxModel(this.jsonFileNameForTest);
+    CoxModel coxModel = new CoxModel(this.jsonFileNameForTest, this.sha256FileNameForTests);
     double modelOutput = coxModel.evaluatePartialCoxModel(this.testCase);
     double expectedReturn = 1.2191263949807742;
     assertTrue(Math.abs(modelOutput - expectedReturn) <1e-6 );
@@ -54,7 +55,7 @@ class CoxModelTest {
 
     @Test
     void cumulativeHazardModel1() {
-        CoxModel coxModel = new CoxModel(this.jsonFileNameForTest);
+        CoxModel coxModel = new CoxModel(this.jsonFileNameForTest, this.sha256FileNameForTests);
         List<Double> modelOutput = coxModel.cumulativeHazardProbability(this.testCase, this.timeValues);
         assertEquals(this.cumulativeExpectedValueTest1.length, modelOutput.size());
         for (int index = 0; index < modelOutput.size(); index++) {
@@ -64,7 +65,7 @@ class CoxModelTest {
 
     @Test
     void cumulativeHazardModel2() {
-        CoxModel coxModel = new CoxModel(this.jsonFileNameForTest);
+        CoxModel coxModel = new CoxModel(this.jsonFileNameForTest, this.sha256FileNameForTests);
         List<Double> modelOutput = coxModel.cumulativeHazardProbability(this.testCase2, this.timeValues);
         assertEquals(this.cumulativeExpectedValueTest2.length, modelOutput.size());
         for (int index = 0; index < modelOutput.size(); index++) {

@@ -1,5 +1,6 @@
 package com.company;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -12,6 +13,7 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class DeserializeJSON {
     private static final Logger logger = Logger.getLogger(CoxModel.class.getName());
@@ -24,13 +26,12 @@ public class DeserializeJSON {
      * Loads a JSON file and parses it as a JSON file.
      * @param jsonFileName Name of the file in the Resources folder.
      */
-    public DeserializeJSON(String jsonFileName) {
+    public DeserializeJSON(String jsonFileName, String sha256FileName) {
         try {
-            String path = Objects.requireNonNull(Main.class.getClassLoader().getResource(jsonFileName)).getPath();
-            try (BufferedReader bufferedReader = new BufferedReader(new FileReader(path))) {
-                logger.log(Level.INFO, path);
+            VerifyFileUsingSha256 hashVerifier = new VerifyFileUsingSha256(jsonFileName, sha256FileName);
+            String fileAsString = hashVerifier.verifyHashAndReturnFile();
                 JSONParser jsonParser = new JSONParser();
-                this.rawJSON = (JSONObject) jsonParser.parse(bufferedReader);
+                this.rawJSON = (JSONObject) jsonParser.parse(fileAsString);
                 this.getModelParameters();
             } catch (IOException exception) {
                 logger.log(Level.SEVERE, "The File was not found.");
@@ -38,13 +39,12 @@ public class DeserializeJSON {
             } catch (ParseException exception) {
                 logger.log(Level.SEVERE, "Could not parse the file using JSON format.");
                 exception.printStackTrace();
-            }
-        }
-        catch (NullPointerException exception){
-            logger.log(Level.SEVERE, "The file was not in the resources folder.");
-            exception.printStackTrace();
+            } catch (Exception e) {
+            logger.log(Level.SEVERE, "The hashes did not match. Try re-running the Python script.");
+            e.printStackTrace();
         }
     }
+
 
     /**
      * Convers the inputs to doubles.

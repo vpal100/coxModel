@@ -8,7 +8,7 @@ import java.util.HashMap;
 import static org.junit.jupiter.api.Assertions.*;
 
 class DeserializeJSONTest {
-    private final DeserializeJSON deserializeJSON= new DeserializeJSON("cph_model_exports.json");
+    private final DeserializeJSON deserializeJSON= new DeserializeJSON("cph_model_exports.json", "sha256.hash");
 
     @Test
     void getBaselineModel() {
@@ -45,6 +45,6 @@ class DeserializeJSONTest {
 
     @Test
     void throwsErrorThatIsCaught(){
-        DeserializeJSON deserializeJSON= new DeserializeJSON("error");
+        DeserializeJSON deserializeJSON= new DeserializeJSON("error", "error.hash");
     }
 }

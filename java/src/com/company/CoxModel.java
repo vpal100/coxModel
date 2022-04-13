@@ -14,8 +14,8 @@ public class CoxModel {
      * Given the filename of the Python outputted Cox Model at JSON, loads the model into Java.
      * @param jsonFileName The name of the JSON file, must be located in the Resources folder.
      */
-    public CoxModel(String jsonFileName){
-        DeserializeJSON deserializeJSON = new DeserializeJSON(jsonFileName);
+    public CoxModel(String jsonFileName, String sha256FileName){
+        DeserializeJSON deserializeJSON = new DeserializeJSON(jsonFileName, sha256FileName);
         HashMap<Double, Double> baselineModel = deserializeJSON.getBaselineModel();
         this.meanVector = deserializeJSON.getParsedJSON().get("meanVector");
         this.betaVector = deserializeJSON.getParsedJSON().get("betaVector");
