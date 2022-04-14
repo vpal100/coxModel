@@ -1,18 +1,18 @@
 package test;
 
-import com.company.DeserializeJSON;
+import com.company.CoxModelJSONDeserializer;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class DeserializeJSONTest {
-    private final DeserializeJSON deserializeJSON= new DeserializeJSON("cph_model_exports.json", "sha256.hash");
+class CoxModelJSONDeserializerTest {
+    private final CoxModelJSONDeserializer coxModelJSONDeserializer = new CoxModelJSONDeserializer("cph_model_exports.json", "sha256.hash");
 
     @Test
     void getBaselineModel() {
-        HashMap<Double,Double> baselineModel = this.deserializeJSON.getBaselineModel();
+        HashMap<Double,Double> baselineModel = this.coxModelJSONDeserializer.getBaselineModel();
         double expectedValueAt10 = 0.002032059184125721;
         assertTrue(Math.abs(baselineModel.get(10.) - expectedValueAt10) < 1e-6);
 
@@ -25,16 +25,24 @@ class DeserializeJSONTest {
     }
 
     @Test
-    void getParsedJSON() {
-        HashMap<String, Double> meanVector = this.deserializeJSON.getParsedJSON().get("meanVector");
+    void getMeanVector() {
+        HashMap<String, Double> meanVector = this.coxModelJSONDeserializer.getMeanVector();
 
         double expectedValueAtRace = 0.8773148148148148;
         assertTrue(Math.abs(meanVector.get("race") - expectedValueAtRace) < 1e-6);
     }
 
     @Test
+    void getBetaVector() {
+        HashMap<String, Double> betaVector = this.coxModelJSONDeserializer.getBetaVector();
+
+        double expectedValueAtParo = -0.0848710735049427;
+        assertTrue(Math.abs(betaVector.get("paro") - expectedValueAtParo) < 1e-6);
+    }
+
+    @Test
     void getCumulativeBaselineModel() {
-        HashMap<Double, Double> cumulativeBaselineModel = this.deserializeJSON.getCumulativeBaselineModel();
+        HashMap<Double, Double> cumulativeBaselineModel = this.coxModelJSONDeserializer.getCumulativeBaselineModel();
 
         double expectedValueAt7 = 0.01381023231607111;
         assertTrue(Math.abs(cumulativeBaselineModel.get(7.) - expectedValueAt7) < 1e-6);
@@ -44,7 +52,7 @@ class DeserializeJSONTest {
     }
 
     @Test
-    void throwsErrorThatIsCaught(){
-        DeserializeJSON deserializeJSON= new DeserializeJSON("error", "error.hash");
+    void throwsErrorThatIsNotCaught(){
+        assertThrowsExactly(NullPointerException.class, () -> {new CoxModelJSONDeserializer("error", "error.hash");}) ;
     }
 }

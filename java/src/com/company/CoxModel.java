@@ -11,15 +11,14 @@ public class CoxModel {
     private final HashMap<String, Double> meanVector;
 
     /**
-     * Given the filename of the Python outputted Cox Model at JSON, loads the model into Java.
-     * @param jsonFileName The name of the JSON file, must be located in the Resources folder.
+     * Creates a Cox model from the deserialized object.
+     * @param coxModelJSONDeserializer The deserialized JSON object.
      */
-    public CoxModel(String jsonFileName, String sha256FileName){
-        DeserializeJSON deserializeJSON = new DeserializeJSON(jsonFileName, sha256FileName);
-        HashMap<Double, Double> baselineModel = deserializeJSON.getBaselineModel();
-        this.meanVector = deserializeJSON.getParsedJSON().get("meanVector");
-        this.betaVector = deserializeJSON.getParsedJSON().get("betaVector");
-        this.cumulativeBaselineModel = deserializeJSON.getCumulativeBaselineModel();
+    public CoxModel(CoxModelJSONDeserializer coxModelJSONDeserializer){
+        HashMap<Double, Double> baselineModel = coxModelJSONDeserializer.getBaselineModel();
+        this.meanVector = coxModelJSONDeserializer.getMeanVector();
+        this.betaVector = coxModelJSONDeserializer.getBetaVector();
+        this.cumulativeBaselineModel = coxModelJSONDeserializer.getCumulativeBaselineModel();
         logger.log(Level.INFO, "Baseline model coefficients: " + baselineModel.toString());
         logger.log(Level.INFO, "Mean vector: "+ this.meanVector.toString());
         logger.log(Level.INFO, "Beta coefficients: " + this.betaVector.toString());
@@ -52,10 +51,10 @@ public class CoxModel {
     public List<Double> cumulativeHazardProbability(HashMap<String, Double> pointVector, double[] times){
         List<Double> cumulativeHazards = new ArrayList<>();
         double partialHazardConstant = evaluatePartialCoxModel(pointVector);
-        LinearInterpolationFromSamplePoints linearInterpolationFromSamplePoints = new LinearInterpolationFromSamplePoints(this.cumulativeBaselineModel);
+        PiecewiseLinearInterpolator piecewiseLinearInterpolator = new PiecewiseLinearInterpolator(this.cumulativeBaselineModel);
         for (double time : times) {
-            double baselineHazardAtSpecificTime = linearInterpolationFromSamplePoints.linearInterpolation(time);
-            System.out.printf("Baseline Hazard at time %f is %f \n", time, baselineHazardAtSpecificTime);
+            double baselineHazardAtSpecificTime = piecewiseLinearInterpolator.linearInterpolation(time);
+            logger.log(Level.INFO, String.format("Baseline Hazard at time %f is %f", time, baselineHazardAtSpecificTime) );
             cumulativeHazards.add(partialHazardConstant * baselineHazardAtSpecificTime);
         }
         return cumulativeHazards;

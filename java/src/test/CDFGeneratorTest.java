@@ -1,13 +1,13 @@
 package test;
 
-import com.company.CumulativeSumOfFunction;
+import com.company.CDFGenerator;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class CumulativeSumOfFunctionTest {
+class CDFGeneratorTest {
 
     @Test
     void cumulativeSum() {
@@ -16,7 +16,7 @@ class CumulativeSumOfFunctionTest {
         dataPoints.put(3.0, 1.0);
         dataPoints.put(2.0, 1.0);
 
-        HashMap<Double, Double> cumulativeSumFunction = CumulativeSumOfFunction.cumulativeSum(dataPoints);
+        HashMap<Double, Double> cumulativeSumFunction = CDFGenerator.cumulativeSum(dataPoints);
         assertTrue(Math.abs(cumulativeSumFunction.get(3.) - 3) <1e-6);
     }
 }

@@ -1,12 +1,9 @@
 package com.company;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.json.simple.parser.ParseException;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,14 +19,20 @@ public class VerifyFileUsingSha256 {
         this.fileNameForSha256 = fileNameForSha256;
     }
 
-    public String verifyHashAndReturnFile() throws Exception {
+    /**
+     * Given a file and its SHA256 hash, it verifies that the hash is correct.
+     * @return The file after the hash is verified or null if there is an error or the hashes do not match.
+     *         The handling of the exceptions needs to be determined by the use cases, and whether a default/backup model should be used.
+     */
+    public String verifyHashAndReturnFile() {
         String sha256HashOfFile;
         String sha256HashFromFile;
-        String path = Objects.requireNonNull(Main.class.getClassLoader().getResource(this.fileName)).getPath();
-        logger.log(Level.INFO, "Path for the file: " + path);
-        String pathForHash = Objects.requireNonNull(Main.class.getClassLoader().getResource(this.fileNameForSha256)).getPath();
-        logger.log(Level.INFO, "Path for the hash: "+ pathForHash);
         try {
+            String path = Objects.requireNonNull(Main.class.getClassLoader().getResource(this.fileName)).getPath();
+            logger.log(Level.INFO, "Path for the file: " + path);
+            String pathForHash = Objects.requireNonNull(Main.class.getClassLoader().getResource(this.fileNameForSha256)).getPath();
+            logger.log(Level.INFO, "Path for the hash: "+ pathForHash);
+
             BufferedReader bufferedReader = new BufferedReader(new FileReader(path));
             String fileAsString = bufferedReader.lines().collect(Collectors.joining());
             sha256HashOfFile = DigestUtils.sha256Hex(fileAsString);
@@ -41,10 +44,12 @@ public class VerifyFileUsingSha256 {
                 return fileAsString;
             }
         }
-        catch (IOException exception) {
+        catch (NullPointerException | FileNotFoundException exception ) {
             logger.log(Level.SEVERE, "The File was not found.");
             exception.printStackTrace();
+            return null;
         }
-        throw new Exception("The hash of the file does not match the stored hash.");
+        logger.log(Level.SEVERE,"The hash of the file does not match the stored hash.");
+        return null;
     }
 }

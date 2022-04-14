@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class SimpleLinearInterpolation {
+public class SimpleLinearInterpolator {
     private final double secondXValue;
     private final double secondYValue;
     private final double firstXValue;
@@ -16,7 +16,7 @@ public class SimpleLinearInterpolation {
      * @param firstPoint A point on the line.
      * @param secondPoint Another point on the line.
      */
-    public SimpleLinearInterpolation(double[] firstPoint, double[] secondPoint) {
+    public SimpleLinearInterpolator(double[] firstPoint, double[] secondPoint) {
         logger.log(Level.INFO, Arrays.toString(firstPoint));
         logger.log(Level.INFO, Arrays.toString(secondPoint));
         if(firstPoint.length ==2 && secondPoint.length == 2) {

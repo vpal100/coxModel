@@ -7,14 +7,13 @@ def create_lifeline_model():
     rossi = load_rossi()
     cph = CoxPHFitter()
     cph.fit(rossi, 'week', 'arrest')
-    cph.print_summary()
-    print(cph.params_)
-    print(cph.baseline_hazard_)
-    print(cph.summary)
+    return cph
+
+def export_cox_model(cox_model):
     ret = dict()
-    ret.update(cph.baseline_hazard_.to_dict())
-    ret['parameters'] = cph.params_.to_dict()
-    ret['mean'] = cph._norm_mean.to_dict()
+    ret.update(cox_model.baseline_hazard_.to_dict())
+    ret['parameters'] = cox_model.params_.to_dict()
+    ret['mean'] = cox_model._norm_mean.to_dict()
     json_object = json.dumps(ret)
     with open(r"java\resources\cph_model_exports.json", 'w') as json_file:
         json_file.write(json_object)
@@ -24,5 +23,6 @@ def create_lifeline_model():
         hash_file.write(sha256_hash)
 
 if __name__ == '__main__':
-    create_lifeline_model()
+    cox_model = create_lifeline_model()
+    export_cox_model(cox_model)
 

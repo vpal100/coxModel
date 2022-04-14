@@ -3,7 +3,7 @@ package com.company;
 import java.util.HashMap;
 import java.util.Iterator;
 
-public class CumulativeSumOfFunction {
+public class CDFGenerator {
 
     /**
      * Given a functions, creates the cumulative function (where the y-values are the cumulative sum of the y-values).
